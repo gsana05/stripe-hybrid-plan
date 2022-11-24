@@ -19,6 +19,9 @@ const Checkout = () => {
     if(stripe !== null){
       //const { error } = await stripe.redirectToCheckout(checkoutOptions);
 
+      console.log("stripe.retrievePaymentIntent: " + stripe.retrievePaymentIntent);
+      console.log("stripe.retrieveOrder: " + stripe.retrieveOrder);
+
       const { error } = await stripe.redirectToCheckout({
         lineItems: [
           {

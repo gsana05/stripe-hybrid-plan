@@ -4,6 +4,7 @@ import './App.css';
 import getStripe from "../src/stripe/Stripe"
 
 import Checkout from "./components/Checkout";
+import CheckoutInApp from './components/checkoutInApp/CheckoutInApp';
 import Success from "./components/Success";
 import Cancel from "./components/Cancel";
 
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <Routes>
           <Route index element={<Checkout />} />
+          {/* <Route index element={<CheckoutInApp />} /> */}
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
         </Routes>

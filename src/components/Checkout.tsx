@@ -5,11 +5,38 @@ import ProductImage from "../images/product-image.jpg";
 
 import "../styles.css";
 
-import getStripe from "../../src/stripe/Stripe"
+import getStripe from "../../src/stripe/Stripe";
+import { useStripe, Elements, PaymentElement, useElements } from "@stripe/react-stripe-js";
 
 const Checkout = () => {
   const [stripeError, setStripeError] = useState("");
   const [isLoading, setLoading] = useState(false);
+
+  const HandleSubmit = async () => {
+
+    console.log("CONFIRM ERROR:");
+
+    const stripe = useStripe();
+    const elements = useElements();
+  
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+  
+    const {error} = await stripe.confirmPayment({
+      //`Elements` instance that was used to create the Payment Element
+      elements,
+      confirmParams: {
+        return_url: "https://example.com/order/123/complete",
+      },
+    });
+  
+    console.log("CONFIRM ERROR:", error);
+    
+  
+  }
 
   const redirectToCheckout = async () => {
     setLoading(true);
@@ -21,6 +48,7 @@ const Checkout = () => {
 
       console.log("stripe.retrievePaymentIntent: " + stripe.retrievePaymentIntent);
       console.log("stripe.retrieveOrder: " + stripe.retrieveOrder);
+      
 
       const { error } = await stripe.redirectToCheckout({
         lineItems: [
@@ -49,30 +77,41 @@ const Checkout = () => {
 
   if (stripeError) alert(stripeError);
 
+  const options = {
+    // passing the client secret obtained from the server
+    clientSecret: process.env.STRIPE_SECRET_KEY,
+  };
+
   return (
-    <div className="checkout">
-      <h1>HYBRID ATHLETE PLAN</h1>
-      <h1 className="checkout-price">$19</h1>
-      <img
-        className="checkout-product-image"
-        src={ProductImage}
-        alt="Product"
-      />
-      <button
-        className="checkout-button"
-        onClick={redirectToCheckout}
-        disabled={isLoading}
-      >
-        <div className="grey-circle">
-          <div className="purple-circle">
-            <img className="icon" src={CardIcon} alt="credit-card-icon" />
-          </div>
+
+    <Elements stripe={getStripe()} options={options}>
+
+      <div className="checkout">
+          <h1>HYBRID ATHLETE PLAN</h1>
+          <h1 className="checkout-price">$19</h1>
+          <img
+            className="checkout-product-image"
+            src={ProductImage}
+            alt="Product"
+          />
+          <button
+            className="checkout-button"
+            onClick={redirectToCheckout}
+            disabled={isLoading}
+          >
+            <div className="grey-circle">
+              <div className="purple-circle">
+                <img className="icon" src={CardIcon} alt="credit-card-icon" />
+              </div>
+            </div>
+            <div className="text-container">
+              <p className="text">{isLoading ? "Loading..." : "Buy"}</p>
+            </div>
+          </button>
         </div>
-        <div className="text-container">
-          <p className="text">{isLoading ? "Loading..." : "Buy"}</p>
-        </div>
-      </button>
-    </div>
+
+    </Elements>
+
   );
 };
 

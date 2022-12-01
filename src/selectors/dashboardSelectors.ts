@@ -4,7 +4,7 @@ import { AppState } from "../rootReducer/rootReducer";
 
 const getPending = (state: AppState) => state.astronaut.pending;
 
-const getAstronauts = (state: AppState) => state.astronaut.astronauts;
+const getAstronauts = (state: AppState) => state.astronaut.token;
 
 const getError = (state: AppState) => state.astronaut.error;
 

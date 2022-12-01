@@ -1,41 +1,26 @@
 import { useState } from "react";
-
 import CardIcon from "../images/credit-card.jpg";
 import ProductImage from "../images/product-image.jpg";
-
 import "../styles.css";
-
 import getStripe from "../../src/stripe/Stripe";
 import { useStripe, Elements, PaymentElement, useElements } from "@stripe/react-stripe-js";
+import { useDispatch, useSelector } from "react-redux";
+import { setPurchasedTokenRequest } from "../actions/actions";
 
 const Checkout = () => {
   const [stripeError, setStripeError] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const HandleSubmit = async () => {
+  const [token, setToken] = useState('');
 
-    console.log("CONFIRM ERROR:");
+  const dispatch = useDispatch();
 
-    const stripe = useStripe();
-    const elements = useElements();
-  
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-  
-    const {error} = await stripe.confirmPayment({
-      //`Elements` instance that was used to create the Payment Element
-      elements,
-      confirmParams: {
-        return_url: "https://example.com/order/123/complete",
-      },
-    });
-  
-    console.log("CONFIRM ERROR:", error);
-    
-  
+  function paymentSuccessful() : string {
+    // payment has successfully gone through
+    console.log("payment success");
+    dispatch(setPurchasedTokenRequest());
+
+    return `${window.location.origin}/success`
   }
 
   const redirectToCheckout = async () => {
@@ -58,7 +43,7 @@ const Checkout = () => {
           },
         ],
         mode: 'payment',
-        successUrl: `${window.location.origin}/success`,
+        successUrl: paymentSuccessful(),
         cancelUrl: `${window.location.origin}/cancel`,
         customerEmail: 'customer@email.com',
       });
@@ -67,6 +52,9 @@ const Checkout = () => {
 
       if (error) {
         setStripeError(error.message ? error.message : "ERROR");  
+      }
+      else{
+        console.log("Payment was successful");
       }
 
       setLoading(false);

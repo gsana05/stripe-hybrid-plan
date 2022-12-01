@@ -1,70 +1,46 @@
 import {
-    FETCH_ASTRONAUT_REQUEST,
-    FETCH_ASTRONAUT_SUCCESS,
-    FETCH_ASTRONAUT_FAILURE,
+    SET_PURCHASE_TOKEN_REQUEST_REQUEST,
+    SET_PURCHASE_TOKEN_REQUEST_SUCCESS,
+    SET_PURCHASE_TOKEN_REQUEST_FAILURE
   } 
   from "../actions/actionTypes";
 
-export interface User {
-    userId? : String,
-    name : String,
-    email : String,
-    gender? : number, // 1 = male 2 = female
-    age? : number,
-    height? : number,
-    weight? : number,
-    notificationTokens? : Array<String>,
-    dateJoined? : Date,
-    notificationsEnabled? : Boolean,
-    isAdmin? : boolean
-}
-  
-  // firebase query
-    export interface Astronaut {
-      id: number;
-      name: string;
-    }
-    
-    // http with axios 
-    // export interface Astronaut {
-    //   userId: number;
-    //   id: number;
-    //   title: string;
-    //   completed: boolean;
-    // }
-    
-    export interface AstronautState {
-      pending: boolean;
-      astronauts: Astronaut[];
-      error: string | null;
-    }
-    
-    export interface FetchTodoSuccessPayload {
-      astronauts: Astronaut[];
-    }
-    
-    export interface FetchTodoFailurePayload {
-      error: string;
-    }
-    
-    // typeof -> Gets the type of variable: could be int, string, boolean ect.. 
-    // In this case it is a string but could be changed in the future
-    // type : string 
-    export interface FetchAstronautRequest {
-      type: typeof FETCH_ASTRONAUT_REQUEST;
-    }
-    
-    export type FetchAstronautSuccess = {
-      type: typeof FETCH_ASTRONAUT_SUCCESS;
-      payload: FetchTodoSuccessPayload;
-    };
-    
-    export type FetchAstronautFailure = {
-      type: typeof FETCH_ASTRONAUT_FAILURE;
-      payload: FetchTodoFailurePayload;
-    };
-    
-    export type AstronautActions =
-      | FetchAstronautRequest
-      | FetchAstronautSuccess
-      | FetchAstronautFailure;
+  export interface PurchaseTokenState {
+    pending: boolean;
+    token: PurchasedToken | null;
+    error: string | null;
+  }
+
+  export interface FetchPurchaseTokenSuccessPayload {
+    purchaseToken: PurchasedToken;
+  }
+
+  export interface PurchasedToken {
+      accessToken: string,
+      programPurchased: number,
+      isUsed: boolean,
+      date: Date
+  };
+
+  export interface FetchPurchaseTokenFailurePayload {
+    error: string;
+  }
+
+  export interface SetPurchaseTokenRequest {
+    type: typeof SET_PURCHASE_TOKEN_REQUEST_REQUEST
+  }
+
+  export interface SetPurchaseTokenSuccess {
+    type: typeof SET_PURCHASE_TOKEN_REQUEST_SUCCESS
+    payload: FetchPurchaseTokenSuccessPayload;
+  }
+
+  export interface SetPurchaseTokenFailure {
+    type: typeof SET_PURCHASE_TOKEN_REQUEST_FAILURE
+    payload: FetchPurchaseTokenFailurePayload;
+  }
+
+  export type PurchasedTokenActions =
+    | SetPurchaseTokenRequest
+    | SetPurchaseTokenSuccess
+    | SetPurchaseTokenFailure

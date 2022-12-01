@@ -5,25 +5,24 @@ import { FirebaseError } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { doc, setDoc  } from 'firebase/firestore';
-import {User} from '../types/Types';
+import { PurchasedToken } from '../types/Types';
 
-export async function setUserAccessToken(purchasedIdToken: String) : Promise<string> {
+export async function setUserAccessToken() : Promise<PurchasedToken> {
 
     try{
 
         const accessToken = generateRandomString(10, false);
        
-        const docData = {
+        const purchaseToken : PurchasedToken = {
             accessToken: accessToken,
             programPurchased: 1,
             isUsed: false,
-            date: new Date(),
-            purchaseId: purchasedIdToken
+            date: new Date()
         };
     
-        await setDoc(doc(db, "AccessTokens", accessToken), docData);
+        await setDoc(doc(db, "AccessTokens", accessToken), purchaseToken);
         console.log("Success");
-        return accessToken;
+        return purchaseToken;
 
     }catch(error){
         console.log("ERROR: ", error);

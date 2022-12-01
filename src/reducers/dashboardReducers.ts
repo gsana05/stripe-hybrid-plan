@@ -1,37 +1,37 @@
 import {
-    FETCH_ASTRONAUT_REQUEST,
-    FETCH_ASTRONAUT_SUCCESS,
-    FETCH_ASTRONAUT_FAILURE,
+    SET_PURCHASE_TOKEN_REQUEST_REQUEST,
+    SET_PURCHASE_TOKEN_REQUEST_SUCCESS,
+    SET_PURCHASE_TOKEN_REQUEST_FAILURE,
   } from "../actions/actionTypes";
   
-  import { AstronautActions, AstronautState } from "../types/Types";
+  import { PurchasedTokenActions, PurchaseTokenState } from "../types/Types";
   
-  const initialState: AstronautState = {
+  const initialState: PurchaseTokenState = {
     pending: false,
-    astronauts: [],
+    token: null,
     error: null,
   };
   // REDUCER: You can think of a reducer as an event listener which handles events based on the received action (event) type.
   
-  export default (state = initialState, action: AstronautActions) => {
+  export default (state = initialState, action: PurchasedTokenActions) => {
     switch (action.type) {
-      case FETCH_ASTRONAUT_REQUEST:
+      case SET_PURCHASE_TOKEN_REQUEST_REQUEST:
         return {
           ...state,
           pending: true,
         };
-      case FETCH_ASTRONAUT_SUCCESS:
+      case SET_PURCHASE_TOKEN_REQUEST_SUCCESS:
         return {
           ...state,
           pending: false,
-          astronauts: action.payload.astronauts,
+          token: action.payload.purchaseToken,
           error: null,
         };
-      case FETCH_ASTRONAUT_FAILURE:
+      case SET_PURCHASE_TOKEN_REQUEST_FAILURE:
         return {
           ...state,
           pending: false,
-          astronauts: [],
+          token: null,
           error: action.payload.error,
         };
       default:

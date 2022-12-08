@@ -3,7 +3,7 @@ import { all, call, put, takeLatest } from "redux-saga/effects";
 
 import { getPendingPurchasedTokenFailure, GetPendingPurchasedTokenSuccess, setPendingPurchasedTokenFailure, setPendingPurchasedTokenSuccess, setPurchasedTokenFailure, setPurchasedTokenSuccess } from "../actions/actions";
 import { GET_PENDING_PURCHASE_TOKEN_REQUEST, SET_PENDING_PURCHASE_TOKEN_REQUEST, SET_PURCHASE_TOKEN_REQUEST_REQUEST } from "../actions/actionTypes";
-import { PendingPurchasedToken, PurchasedToken } from "../types/Types";
+import { PendingPurchasedToken, PurchasedToken, testing } from "../types/Types";
 import { SagaIterator } from '@redux-saga/types';
 import {generateRandomString, getPendingAccessTokens, setPendingUserAccessToken, setUserAccessToken} from "../services/UserPaymentsService";
 
@@ -126,15 +126,19 @@ function* setPendingPurchaseTokenSaga() : SagaIterator{
     }
 } 
 
-function* getPendingPurchaseTokenSaga(): SagaIterator {
+function* getPendingPurchaseTokenSaga( res : any ): SagaIterator {
 
   console.log("UPDATE FIRED SUCCESS");
 
   try {
 
-    console.log("UPDATE FIRED SUCCESS");
+    const item  = res as {type: 'GET_PENDING_PURCHASE_TOKEN_REQUEST', payload: {}, meta: undefined} // returns thsi way because of actionPayload in utils
 
-    const pendingAccessToken = "5qliSqARHr"
+    const y = item.payload as PendingPurchasedToken
+
+    console.log("UPDATE FIRED SUCCESS ITEM: ", y.token);
+
+    const pendingAccessToken = y.token
 
     //CALL - 
       const response = yield call(getPendingPurchaseToken, pendingAccessToken);
@@ -179,6 +183,7 @@ function* astronautSaga() {
   yield all([
     takeLatest(SET_PURCHASE_TOKEN_REQUEST_REQUEST, setPurchaseTokenSaga),
     takeLatest(SET_PENDING_PURCHASE_TOKEN_REQUEST, setPendingPurchaseTokenSaga),
+    //takeLatest(GET_PENDING_PURCHASE_TOKEN_REQUEST, getPendingPurchaseTokenSaga),
     takeLatest(GET_PENDING_PURCHASE_TOKEN_REQUEST, getPendingPurchaseTokenSaga)
   ]);
 }

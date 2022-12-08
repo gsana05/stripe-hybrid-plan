@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect  } from "react";
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 import { useSearchParams, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPendingPurchasedTokenRequest, setPurchasedTokenRequest } from "../actions/actions";
+import { getPendingPurchasedTokenRequest, setPurchasedTokenRequest, testingSagaParams } from "../actions/actions";
 import { getUnpaidPendingAccessTokenSelector, getUnpaidPendingSelector, getUnpaidErrorSelector } from "../selectors/dashboardSelectors";
 import { updateTicketPromise } from "../routines/routines";
 import { PendingPurchasedToken } from "../types/Types";
@@ -28,7 +28,9 @@ const Success = () => {
 
   useEffect( () => {
 
-    dispatch(getPendingPurchasedTokenRequest());
+    //dispatch(getPendingPurchasedTokenRequest());
+    dispatch(testingSagaParams.updateTicketTest({token: "J4IyvRkoor"}))
+    
 
     console.log("accessToken", accessToken);
     console.log("id", id);

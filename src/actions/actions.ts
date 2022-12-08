@@ -35,6 +35,12 @@ export const getPendingPurchasedTokenRequest = (): GetPendingPurchaseTokenReques
   type: GET_PENDING_PURCHASE_TOKEN_REQUEST
 });
 
+type testing = ActionWithPayload<typeof GET_PENDING_PURCHASE_TOKEN_REQUEST, PendingPurchasedToken>;
+
+export const testingSagaParams = {
+  updateTicketTest: (res: PendingPurchasedToken): testing => createAction(GET_PENDING_PURCHASE_TOKEN_REQUEST, res)
+};
+
 export const GetPendingPurchasedTokenSuccess = (
   payload: FetchPendingPurchaseTokenSuccessPayload
 ): GetPendingPurchaseTokenSuccess => ({

@@ -1,16 +1,11 @@
 import axios from "axios";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 
-import { setPurchasedTokenFailure, setPurchasedTokenSuccess } from "../actions/actions";
-import { SET_PURCHASE_TOKEN_REQUEST_REQUEST } from "../actions/actionTypes";
-import { PurchasedToken } from "../types/Types";
+import { getPendingPurchasedTokenFailure, GetPendingPurchasedTokenSuccess, setPendingPurchasedTokenFailure, setPendingPurchasedTokenSuccess, setPurchasedTokenFailure, setPurchasedTokenSuccess } from "../actions/actions";
+import { GET_PENDING_PURCHASE_TOKEN_REQUEST, SET_PENDING_PURCHASE_TOKEN_REQUEST, SET_PURCHASE_TOKEN_REQUEST_REQUEST } from "../actions/actionTypes";
+import { PendingPurchasedToken, PurchasedToken } from "../types/Types";
 import { SagaIterator } from '@redux-saga/types';
-
-import {auth, db} from '../firebase';
-import { collection, getDocs, onSnapshot, doc, getDoc } from 'firebase/firestore';
-import {setUserAccessToken} from "../services/UserPaymentsService";
-
-const usersCollectionRef = collection(db, "astronauts");
+import {generateRandomString, getPendingAccessTokens, setPendingUserAccessToken, setUserAccessToken} from "../services/UserPaymentsService";
 
 export async function setPurchaseToken() : Promise<PurchasedToken> {
  
@@ -23,6 +18,44 @@ export async function setPurchaseToken() : Promise<PurchasedToken> {
 
   try{
       return getAstronauts();
+  }catch(error){
+      throw Error("");
+  }
+
+}
+
+export async function getPendingPurchaseToken(pendingAccessToken: string) : Promise<PendingPurchasedToken[]> {
+ 
+
+  const setPendingAccessToken = async () => {
+
+    const accessToken = await getPendingAccessTokens(pendingAccessToken);
+    console.log("accessToken", accessToken);
+    return accessToken;
+  }
+
+  try{
+      return setPendingAccessToken();
+  }catch(error){
+      throw Error("");
+  }
+
+}
+
+export async function setPendingPurchaseToken() : Promise<PendingPurchasedToken> {
+ 
+
+  const setPendingAccessToken = async () => {
+
+    const pendingAccessToken = generateRandomString(10, false);
+
+    const accessToken = await setPendingUserAccessToken(pendingAccessToken);
+    console.log("accessToken", accessToken);
+    return accessToken;
+  }
+
+  try{
+      return setPendingAccessToken();
   }catch(error){
       throw Error("");
   }
@@ -61,6 +94,79 @@ function* setPurchaseTokenSaga() : SagaIterator{
       }
 } 
 
+
+function* setPendingPurchaseTokenSaga() : SagaIterator{
+
+  try {
+
+    //CALL - 
+      const response = yield call(setPendingPurchaseToken);
+
+      const pendingPurchasedToken = response as PendingPurchasedToken
+
+      console.log("data:: " + pendingPurchasedToken.token);
+
+      yield put(
+        setPendingPurchasedTokenSuccess({
+          pendingPurchaseToken: pendingPurchasedToken,
+        })
+        
+      );
+
+    } catch (e : any) {
+
+      yield put(
+        setPendingPurchasedTokenFailure({
+          error: e.message,
+        })
+      );
+
+      window.alert("ERROR: " + e.message);
+
+    }
+} 
+
+function* getPendingPurchaseTokenSaga(): SagaIterator {
+
+  console.log("UPDATE FIRED SUCCESS");
+
+  try {
+
+    console.log("UPDATE FIRED SUCCESS");
+
+    const pendingAccessToken = "5qliSqARHr"
+
+    //CALL - 
+      const response = yield call(getPendingPurchaseToken, pendingAccessToken);
+
+      const pendingPurchasedToken = response as PendingPurchasedToken[]
+
+      console.log("data:: " + pendingPurchasedToken.length);
+
+      if(pendingAccessToken.length > 0){
+        yield put(
+          GetPendingPurchasedTokenSuccess({
+            pendingPurchaseToken: pendingPurchasedToken[0],
+          })
+          
+        );
+      }
+
+    } catch (e : any) {
+
+      console.log("UPDATE FIRED Fail");
+
+      yield put(
+        getPendingPurchasedTokenFailure({
+          error: e.message,
+        })
+      );
+
+      window.alert("ERROR: " + e.message);
+
+    }
+} 
+
 /*
   Starts worker saga on latest dispatched `FETCH_TODO_REQUEST` action.
   Allows concurrent increments.
@@ -70,7 +176,11 @@ function* setPurchaseTokenSaga() : SagaIterator{
 
 */
 function* astronautSaga() {
-  yield all([takeLatest(SET_PURCHASE_TOKEN_REQUEST_REQUEST, setPurchaseTokenSaga)]);
+  yield all([
+    takeLatest(SET_PURCHASE_TOKEN_REQUEST_REQUEST, setPurchaseTokenSaga),
+    takeLatest(SET_PENDING_PURCHASE_TOKEN_REQUEST, setPendingPurchaseTokenSaga),
+    takeLatest(GET_PENDING_PURCHASE_TOKEN_REQUEST, getPendingPurchaseTokenSaga)
+  ]);
 }
 
 export default astronautSaga;

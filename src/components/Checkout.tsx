@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CardIcon from "../images/credit-card.jpg";
 import ProductImage from "../images/product-image.jpg";
 import "../styles.css";
 import getStripe from "../../src/stripe/Stripe";
 import { useStripe, Elements, PaymentElement, useElements } from "@stripe/react-stripe-js";
 import { useDispatch, useSelector } from "react-redux";
-import { setPurchasedTokenRequest } from "../actions/actions";
+import { setPendingPurchasedTokenRequest, setPurchasedTokenRequest } from "../actions/actions";
+import { generateRandomString } from "../services/UserPaymentsService";
+import { getUnpaidPendingAccessTokenSelector, getUnpaidPendingSelector, getUnpaidErrorSelector } from "../selectors/dashboardSelectors";
 
 const Checkout = () => {
   const [stripeError, setStripeError] = useState("");
@@ -15,12 +17,31 @@ const Checkout = () => {
 
   const dispatch = useDispatch();
 
+  const getUnpaidPendingAccessToken = useSelector(getUnpaidPendingAccessTokenSelector);
+
   function paymentSuccessful() : string {
     // payment has successfully gone through
     console.log("payment success");
-    dispatch(setPurchasedTokenRequest());
+    const accessToken = generateRandomString(10, false);
 
-    return `${window.location.origin}/success`
+    //dispatch(setPaymentId(accessToken));
+
+    return `${window.location.origin}/success/${accessToken}`
+  }
+
+  useEffect( () => {
+
+    console.log(getUnpaidPendingAccessToken?.token);
+
+    const pendingAccessToken = getUnpaidPendingAccessToken?.token;
+    if(pendingAccessToken != null){
+      redirectToCheckout();
+    }
+    
+  }, [getUnpaidPendingAccessToken])
+
+  function setThePendingAccessToken(){
+    dispatch(setPendingPurchasedTokenRequest());
   }
 
   const redirectToCheckout = async () => {
@@ -84,7 +105,7 @@ const Checkout = () => {
           />
           <button
             className="checkout-button"
-            onClick={redirectToCheckout}
+            onClick={setThePendingAccessToken}
             disabled={isLoading}
           >
             <div className="grey-circle">

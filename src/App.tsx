@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route index element={<Checkout />} />
           {/* <Route index element={<CheckoutInApp />} /> */}
-          <Route path="success" element={<Success />} />
+          <Route path="success/:id" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
         </Routes>
       </Router>

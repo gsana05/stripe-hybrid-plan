@@ -2,17 +2,17 @@ import { createSelector } from "reselect";
 
 import { AppState } from "../rootReducer/rootReducer";
 
-const getPending = (state: AppState) => state.astronaut.pending;
+const getUnpaidPending = (state: AppState) => state.dashboard.unpaidPending
 
-const getAstronauts = (state: AppState) => state.astronaut.token;
+const getUnpaidPendingAccessToken = (state: AppState) => state.dashboard.unpaidPendingAccessToken;
 
-const getError = (state: AppState) => state.astronaut.error;
+const getUnpaidError = (state: AppState) => state.dashboard.unpaidError;
 
-export const getAstronautsSelector = createSelector(getAstronauts, (astronauts) => astronauts);
+export const getUnpaidPendingAccessTokenSelector = createSelector(getUnpaidPendingAccessToken, (unpaidPendingAccessToken) => unpaidPendingAccessToken);
 
-export const getPendingSelector = createSelector(
-  getPending,
+export const getUnpaidPendingSelector = createSelector(
+  getUnpaidPending,
   (pending) => pending
 );
 
-export const getErrorSelector = createSelector(getError, (error) => error);
+export const getUnpaidErrorSelector = createSelector(getUnpaidError, (error) => error);

@@ -52,7 +52,17 @@
   
   .checkout-product-image {
     width: 400px;
+    height: 400px;
+    object-fit: contain;
   }
+
+  .input{
+    padding: 7px 1px;
+    border-radius: 20px;
+    border-style: solid;
+    width: 300px;
+    border-color: rgb(28, 27, 27);
+}
   
   .checkout-button {
     background: linear-gradient(180deg, #ffffff 0%, #d9dfff 100%);

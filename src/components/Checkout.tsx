@@ -36,10 +36,26 @@ const Checkout = () => {
     console.log("SETTING PENDING ACCESS TOKEN: ", pendingAccessToken);
     //window.alert(pendingAccessToken);
     if(pendingAccessToken != null){
-      redirectToCheckout();
+
+      if(validateEmail(email)){
+        redirectToCheckout();
+      }
+      else{
+        console.log("Please enter email");
+      }
+
+      
     }
     
   }, [getUnpaidPendingAccessToken])
+
+  const validateEmail = (email : string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   function setThePendingAccessToken(){
     console.log("TESTING", pendingAccessToken);
@@ -69,6 +85,7 @@ const Checkout = () => {
         mode: 'payment',
         successUrl: paymentSuccessful(pendingAccessToken),
         cancelUrl: `${window.location.origin}/cancel`,
+        customerEmail: email,
         clientReferenceId: getUnpaidPendingAccessToken?.token
       });
 
@@ -94,18 +111,28 @@ const Checkout = () => {
     clientSecret: process.env.STRIPE_SECRET_KEY,
   };
 
+  // set & get email
+  const [email, setEmail] = useState("");
+
+  function setEmailInput(event : any) {
+      const input = (event.target as any).value;
+      setEmail(input);
+  }
+
   return (
 
     <Elements stripe={getStripe()} options={options}>
 
       <div className="checkout">
           <h1>HYBRID ATHLETE PLAN</h1>
-          <h1 className="checkout-price">$19</h1>
+          <h1 className="checkout-price">£0.30</h1>
           <img
             className="checkout-product-image"
             src={ProductImage}
             alt="Product"
           />
+          <h4>Please enter your email before purchase</h4>
+          <input className='measurements input' type="email"  onChange={setEmailInput} value={email} />
           <button
             className="checkout-button"
             onClick={setThePendingAccessToken}

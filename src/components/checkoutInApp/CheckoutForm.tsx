@@ -13,6 +13,9 @@ const CheckoutForm = () => {
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
+    else{
+      console.log("element", elements);
+    }
 
     const result = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -32,7 +35,7 @@ const CheckoutForm = () => {
         mode: 'payment',
         successUrl: `${window.location.origin}/success`,
         cancelUrl: `${window.location.origin}/cancel`,
-        customerEmail: 'customer@email.com',
+        customerEmail: 'customer@email.com'
       });
 
 

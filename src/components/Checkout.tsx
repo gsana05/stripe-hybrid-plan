@@ -19,14 +19,13 @@ const Checkout = () => {
 
   const getUnpaidPendingAccessToken = useSelector(getUnpaidPendingAccessTokenSelector);
 
-  function paymentSuccessful() : string {
+  const pendingAccessToken = generateRandomString(10, false);
+
+  function paymentSuccessful(accessToken: string) : string {
     // payment has successfully gone through
+    console.log(getUnpaidPendingAccessToken?.token);
     console.log("payment success");
-    const accessToken = generateRandomString(10, false);
-
-    //dispatch(setPaymentId(accessToken));
-
-    return `${window.location.origin}/success/${accessToken}`
+    return `${window.location.origin}/success/${getUnpaidPendingAccessToken?.token}`
   }
 
   useEffect( () => {
@@ -34,6 +33,8 @@ const Checkout = () => {
     console.log(getUnpaidPendingAccessToken?.token);
 
     const pendingAccessToken = getUnpaidPendingAccessToken?.token;
+    console.log("SETTING PENDING ACCESS TOKEN: ", pendingAccessToken);
+    //window.alert(pendingAccessToken);
     if(pendingAccessToken != null){
       redirectToCheckout();
     }
@@ -41,7 +42,9 @@ const Checkout = () => {
   }, [getUnpaidPendingAccessToken])
 
   function setThePendingAccessToken(){
-    dispatch(setPendingPurchasedTokenRequest());
+    console.log("TESTING", pendingAccessToken);
+    window.alert(pendingAccessToken);
+    dispatch(setPendingPurchasedTokenRequest.setPendingPurchasedToken({token: pendingAccessToken}));
   }
 
   const redirectToCheckout = async () => {
@@ -64,9 +67,9 @@ const Checkout = () => {
           },
         ],
         mode: 'payment',
-        successUrl: paymentSuccessful(),
+        successUrl: paymentSuccessful(pendingAccessToken),
         cancelUrl: `${window.location.origin}/cancel`,
-        customerEmail: 'customer@email.com',
+        clientReferenceId: getUnpaidPendingAccessToken?.token
       });
 
       console.log("Stripe checkout error", error);

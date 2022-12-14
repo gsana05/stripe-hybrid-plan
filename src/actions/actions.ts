@@ -31,14 +31,10 @@ import {
 import { ActionsUnion, ActionWithPayload, createAction } from "../utils/redux";
 
 
-export const getPendingPurchasedTokenRequest = (): GetPendingPurchaseTokenRequest => ({
-  type: GET_PENDING_PURCHASE_TOKEN_REQUEST
-});
+type GetPendingPurchasedTokenWithPayload = ActionWithPayload<typeof GET_PENDING_PURCHASE_TOKEN_REQUEST, PendingPurchasedToken>;
 
-type testing = ActionWithPayload<typeof GET_PENDING_PURCHASE_TOKEN_REQUEST, PendingPurchasedToken>;
-
-export const testingSagaParams = {
-  updateTicketTest: (res: PendingPurchasedToken): testing => createAction(GET_PENDING_PURCHASE_TOKEN_REQUEST, res)
+export const getPendingPurchasedTokenRequest = {
+  getPendingPurchasedToken: (res: PendingPurchasedToken): GetPendingPurchasedTokenWithPayload => createAction(GET_PENDING_PURCHASE_TOKEN_REQUEST, res)
 };
 
 export const GetPendingPurchasedTokenSuccess = (
@@ -55,9 +51,15 @@ export const getPendingPurchasedTokenFailure = (
   payload,
 });
 
-  export const setPendingPurchasedTokenRequest = (): SetPendingPurchaseTokenRequest => ({
-    type: SET_PENDING_PURCHASE_TOKEN_REQUEST
-  });
+  // export const setPendingPurchasedTokenRequest = (): SetPendingPurchaseTokenRequest => ({
+  //   type: SET_PENDING_PURCHASE_TOKEN_REQUEST
+  // });
+
+type SetPendingPurchasedTokenWithPayload = ActionWithPayload<typeof SET_PENDING_PURCHASE_TOKEN_REQUEST, PendingPurchasedToken>;
+
+export const setPendingPurchasedTokenRequest = {
+  setPendingPurchasedToken: (res: PendingPurchasedToken): SetPendingPurchasedTokenWithPayload => createAction(SET_PENDING_PURCHASE_TOKEN_REQUEST, res)
+};
 
   export const setPendingPurchasedTokenSuccess = (
     payload: FetchPendingPurchaseTokenSuccessPayload

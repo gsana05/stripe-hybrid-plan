@@ -42,12 +42,10 @@ export async function getPendingPurchaseToken(pendingAccessToken: string) : Prom
 
 }
 
-export async function setPendingPurchaseToken() : Promise<PendingPurchasedToken> {
+export async function setPendingPurchaseToken(pendingAccessToken: string) : Promise<PendingPurchasedToken> {
  
 
   const setPendingAccessToken = async () => {
-
-    const pendingAccessToken = generateRandomString(10, false);
 
     const accessToken = await setPendingUserAccessToken(pendingAccessToken);
     console.log("accessToken", accessToken);
@@ -95,12 +93,20 @@ function* setPurchaseTokenSaga() : SagaIterator{
 } 
 
 
-function* setPendingPurchaseTokenSaga() : SagaIterator{
+function* setPendingPurchaseTokenSaga( res: any) : SagaIterator{
 
   try {
 
+    const item  = res as {type: 'GET_PENDING_PURCHASE_TOKEN_REQUEST', payload: {}, meta: undefined} // returns thsi way because of actionPayload in utils
+
+    const y = item.payload as PendingPurchasedToken
+
+    console.log("UPDATE FIRED SUCCESS ITEM: ", y.token);
+
+    const pendingAccessToken = y.token
+
     //CALL - 
-      const response = yield call(setPendingPurchaseToken);
+      const response = yield call(setPendingPurchaseToken, pendingAccessToken);
 
       const pendingPurchasedToken = response as PendingPurchasedToken
 
@@ -154,6 +160,15 @@ function* getPendingPurchaseTokenSaga( res : any ): SagaIterator {
           })
           
         );
+      }
+      else{
+
+        yield put(
+          getPendingPurchasedTokenFailure({
+            error: 'No token was found',
+          })
+        );
+
       }
 
     } catch (e : any) {

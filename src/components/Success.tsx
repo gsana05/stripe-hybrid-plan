@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect  } from "react";
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 import { useSearchParams, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPendingPurchasedTokenRequest, setPurchasedTokenRequest, testingSagaParams } from "../actions/actions";
+import { setPurchasedTokenRequest, getPendingPurchasedTokenRequest } from "../actions/actions";
 import { getUnpaidPendingAccessTokenSelector, getUnpaidPendingSelector, getUnpaidErrorSelector } from "../selectors/dashboardSelectors";
 import { updateTicketPromise } from "../routines/routines";
 import { PendingPurchasedToken } from "../types/Types";
@@ -19,20 +19,7 @@ const Success = () => {
 
   useEffect( () => {
 
-    console.log("HERE TOKEN: ", accessToken?.token);
-
-    
-  }, [accessToken])
-
-  
-
-  useEffect( () => {
-
-    //dispatch(getPendingPurchasedTokenRequest());
-    dispatch(testingSagaParams.updateTicketTest({token: "J4IyvRkoor"}))
-    
-
-    console.log("accessToken", accessToken);
+    console.log("accessToken", accessToken?.token);
     console.log("id", id);
     if(accessToken?.token === id){
       dispatch(setPurchasedTokenRequest());
@@ -43,6 +30,18 @@ const Success = () => {
       console.log("PURCHASE ID IS INVALID");
       setTokenSuccess(false);
     }
+
+    
+  }, [accessToken])
+
+  
+
+  useEffect( () => {
+
+    if(id !== undefined){
+      dispatch(getPendingPurchasedTokenRequest.getPendingPurchasedToken({token: id}))
+    }
+    
   }, [])
 
     return (

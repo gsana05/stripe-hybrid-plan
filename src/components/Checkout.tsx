@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPendingPurchasedTokenRequest, setPurchasedTokenRequest } from "../actions/actions";
 import { generateRandomString } from "../services/UserPaymentsService";
 import { getUnpaidPendingAccessTokenSelector, getUnpaidPendingSelector, getUnpaidErrorSelector } from "../selectors/dashboardSelectors";
+import emailjs from '@emailjs/browser';
+import nodemailer from 'nodemailer';
 
 const Checkout = () => {
   const [stripeError, setStripeError] = useState("");
@@ -58,9 +60,12 @@ const Checkout = () => {
   };
 
   function setThePendingAccessToken(){
-    console.log("TESTING", pendingAccessToken);
-    window.alert(pendingAccessToken);
-    dispatch(setPendingPurchasedTokenRequest.setPendingPurchasedToken({token: pendingAccessToken}));
+
+    sendEmail();
+
+    // console.log("TESTING", pendingAccessToken);
+    // window.alert(pendingAccessToken);
+    // dispatch(setPendingPurchasedTokenRequest.setPendingPurchasedToken({token: pendingAccessToken}));
   }
 
   const redirectToCheckout = async () => {
@@ -118,6 +123,41 @@ const Checkout = () => {
       const input = (event.target as any).value;
       setEmail(input);
   }
+
+  const sendEmail = () => {
+    //e.preventDefault();
+
+    // let transporter = nodemailer.createTransport({
+    //   host: "smtp.ethereal.email",
+    //   port: 587,
+    //   secure: false, // true for 465, false for other ports
+    //   auth: {
+    //     user: 'sanashee05@hotmail.com', // generated ethereal user
+    //     pass: '#123Brouft05', // generated ethereal password
+    //   },
+    // });
+
+    // let info = transporter.sendMail({
+    //   from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    //   to: "sanashee05@hotmail.com, garethsanasheefitness@gmail.com", // list of receivers
+    //   subject: "Hello ✔", // Subject line
+    //   text: "Hello world?", // plain text body
+    //   html: "<b>Hello world?</b>", // html body
+    // });
+
+  //   var templateParams = {
+  //     to_name: 'Gareth',
+  //     from_name: 'Hybrid athlete',
+  //     message: 'WORKING'
+  // };
+
+  //   emailjs.send('service_sti2nff', 'template_ekohckb', templateParams, 'CNVOgctFYh2K6ztS9')
+  //     .then((result) => {
+  //         console.log(result.text);
+  //     }, (error) => {
+  //         console.log(error.text);
+  //     });
+  };
 
   return (
 
